@@ -59,7 +59,7 @@ class GetInfos:
 
     def returnCookies(self):
         try:
-            self.earthdata.login()
+            self.earthdata.login(self.option)
             # 立马获取的是登录home获取到的cookies
             cookies_home = self.earthdata.get_cookies
             params_home = {}
@@ -80,11 +80,13 @@ class GetInfos:
 
     def getWgetInfo(self):
         try:
+            logging.info('into getWgetInfo')
             # 获取两级的cookies
             cookies_params = self.returnCookies()
             # 获取下载token
             self.download_token = Common.getToken(cookies_params)
             logging.info("download_token:[%s]" % self.download_token)
+            self.destory()
             # d = datetime.date.today()
             d = datetime.datetime.utcnow()
             day = Common.getTodays()
@@ -100,7 +102,7 @@ class GetInfos:
                         self.localtion + "/MODIS_C6_1_" + self.localtion + "_MCD14DL_NRT_" + self.today + ".txt' --header 'Authorization: Bearer " + self.download_token + "' -P " + self.savePath
 
     def goGetInfos(self):
-        if os.system(self.wgetInfo) == 0:
+        if os.system(self.wgetInfo) == 0 or os.system(self.wgetInfo) == 2048:
             day = Common.getTodays()
             d = datetime.datetime.utcnow()
             self.today = str(d.year) + str(day)
@@ -138,9 +140,8 @@ class GetInfos:
 
 def getInfosFun():
     logging.info("本次执行开始时间:[%s]" % (datetime.datetime.now()))
-    getInfos = GetInfos()
+    # getInfos = GetInfos()
     getInfos.goGetInfos()
-    getInfos.destory()
 
 
 if __name__ == "__main__":
@@ -153,10 +154,10 @@ if __name__ == "__main__":
     # # tmr.cancel()  #停止
 
     logging.info("开始时间:[%s]" % (datetime.datetime.now()))
-    # getInfos = GetInfos()
+    getInfos = GetInfos()
     # getInfos.goGetInfos()
-    # # 解决定时任务的问题
+    # 解决定时任务的问题
     scheduler = BlockingScheduler()
     # scheduler.add_job(getInfosFun, 'interval', seconds=60)  # date: 特定的时间点触发；interval: 固定时间间隔触发；cron: 在特定时间周期性地触发
-    scheduler.add_job(getInfosFun, 'interval', minutes=60)  # date: 特定的时间点触发；interval: 固定时间间隔触发；cron: 在特定时间周期性地触发
+    scheduler.add_job(getInfosFun, 'interval', minutes=30)  # date: 特定的时间点触发；interval: 固定时间间隔触发；cron: 在特定时间周期性地触发
     scheduler.start()

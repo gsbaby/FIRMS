@@ -20,6 +20,20 @@ def getToken(params, url="https://nrt4.modaps.eosdis.nasa.gov/oauth/key"):
     res = requests.post(url=url, headers=headers, proxies=proxies)
     return res.text
 
+
+def getLadswebToken(params, url="https://ladsweb.modaps.eosdis.nasa.gov/oauth/key"):
+    cookie = "urs_guid_ops=" + params["urs_guid_ops"] + ";ladsweb-oauth2-auth=" + params["ladsweb-oauth2-auth"]
+    headers = {
+        "Cookie": cookie,
+        "origin": "https://ladsweb.modaps.eosdis.nasa.gov",
+        "referer": "https://ladsweb.modaps.eosdis.nasa.gov/archive/allData/",
+        "sec-ch-ua": "'Not A;Brand';v='99', 'Chromium';v='90', 'Google Chrome';v='90'",
+        "user-agent": "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.212 Safari/537.36"
+    }
+    proxies = {'http': None, 'https': None}
+    res = requests.post(url=url, headers=headers, proxies=proxies)
+    return res.text
+
 def cal_date_str_spilt():
     ''''
     处理形如"2020-3-26"

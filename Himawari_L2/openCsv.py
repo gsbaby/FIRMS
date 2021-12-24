@@ -107,9 +107,13 @@ class readCsvFile:
         # 数据库连接参数
         conn = psycopg2.connect(database="nyc", user="postgres", password="postgres", host="192.168.5.89", port="5432")
         cur = conn.cursor()
-        insertSql = "INSERT INTO db_connect_table (table_name,isGeom) VALUES('{}',1)".format(table.lower())
-        cur.execute(insertSql)
-        conn.commit()
+        selectSql = "select * from db_connect_table where table_name = '{}'".format(table.lower())
+        cur.execute(selectSql)
+        isNone = cur.fetchone()
+        if isNone == None:
+            insertSql = "INSERT INTO db_connect_table (table_name,isGeom) VALUES('{}',1)".format(table.lower())
+            cur.execute(insertSql)
+            conn.commit()
         cur.close()
         conn.close()
 

@@ -27,11 +27,11 @@ class infoMationGo():
         self.remotepath = "/pub/himawari/L2/WLF/010"
         # ftp连接参数
         self.ftp_params = {
-            'proxy_host': '127.0.0.1',
-            'proxy_port': 7890,
+            'proxy_host': 'proxy ip',
+            'proxy_port': port,
             'ftp_host': 'ftp.ptree.jaxa.jp',
-            'ftp_user': '913019984_qq.com',
-            'ftp_password': 'SP+wari8',
+            'ftp_user': 'email@email.com',
+            'ftp_password': 'password',
         }
         self.ftp = {}
         self.bufsize = 4096  # bufsize设置缓冲块大小

@@ -3,11 +3,13 @@
 # @Time    : 2021/10/21 0021 下午 5:24
 # @Function:
 
+import logging
+import time
+
 # coding:utf-8
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
-import time
-import logging
+from bs4 import BeautifulSoup
 
 # 存放日志地点
 LOG_FILE_NAME = "./log.log"
@@ -31,19 +33,34 @@ class earthdataLogin():
         # self.url = "https://urs.earthdata.nasa.gov/home"
         self.driverChrome = webdriver.Chrome(options=options)  # 你的google浏览器驱动存放路径
 
-    def login(self):
+    def login(self, option={"url":""}):
+        self.url = option["url"]
         self.driverChrome.get(self.url)
         logging.info("Open Url!")
-        time.sleep(1)  # 等待浏览器加载10秒
         username = self.driverChrome.find_element_by_id("username")
-        username.send_keys("justlikebaby")
+        username.send_keys("username")
         password = self.driverChrome.find_element_by_id("password")
-        password.send_keys('Gao1song159753,')
+        password.send_keys('password')
         self.driverChrome.find_element_by_name('commit').click()
         logging.info("Login In!")
+        time.sleep(10)  # 等待浏览器加载10秒
 
     def goUrl(self, url):
         self.driverChrome.get(url)
+
+
+    def getAttrContentsInfo(self, url, lable, attrs):
+        self.driverChrome.get(url)
+        # selenium获取当前页面源码
+        html = self.driverChrome.page_source
+        # BeautifulSoup转换页面源码
+        bs = BeautifulSoup(html, 'lxml')
+        # 解析获得Ifream组件
+        downloadIfream = bs.find_all(lable, attrs=attrs)
+        contents = []
+        for i in downloadIfream:
+            contents.append(i.contents[0])
+        return contents
 
     @property
     def get_cookies(self):
@@ -52,4 +69,3 @@ class earthdataLogin():
 
     def closeChrome(self):
         self.driverChrome.close()
-

@@ -7,8 +7,6 @@ import math
 
 import psycopg2
 
-import Common
-
 
 def connectDatabase(table, ispoint=True):
     # 数据库连接参数
@@ -32,6 +30,7 @@ def connectDatabase(table, ispoint=True):
     cur.close()
     conn.close()
 
+
 # 通过某字段长度进行四至边界范围的确定
 def getPolygonInfo_byAttribute(data):
     polygon = []
@@ -47,6 +46,7 @@ def getPolygonInfo_byAttribute(data):
             [lat - latitude, lon - longitude, lat - latitude, lon + longitude, lat + latitude, lon + longitude,
              lat + latitude, lon - longitude, lat - latitude, lon - longitude])
     return polygon
+
 
 def getPolygonInfo(data):
     polygon = []
@@ -110,14 +110,17 @@ def insertInto(data, table, ispoint=True):
     cur.close()
     conn.close()
 
+
 def insert_db_connect_table(table):
     # 数据库连接参数
     conn = psycopg2.connect(database="nyc", user="postgres", password="postgres", host="192.168.5.89", port="5432")
     cur = conn.cursor()
 
-    isSqlTableName = "select * from db_connect_table where table_name = '{}'".format(table.lower())
+    isSqlTableName = "select * from db_connect_table where table_name = '" + table.lower() + "'"
+
+    # selectExistsTable = '''select * from db_connect_table where table_name = {}'''.format(table.lower())
     cur.execute(isSqlTableName)
-    isConnectTableName = cur.fetchone()[0]
+    isConnectTableName = cur.fetchone()
     if isConnectTableName:
         pass
     else:
@@ -127,10 +130,11 @@ def insert_db_connect_table(table):
     cur.close()
     conn.close()
 
-
 # if __name__ == "__main__":
-#     tableName = 'firms_modis_russia_asia_2021298_polygon'
-#     connectDatabase(tableName, False)
-#     data = Common.readlineTxt(
-#         "/run/user/1000/gvfs/afp-volume:host=RS.local,user=admin,volume=RS_GIS/RS_DATA/MODIS/FIRMS/modis-c6.1/Russia_Asia/MODIS_C6_1_Russia_Asia_MCD14DL_NRT_2021298.txt")
-#     insertInto(data, tableName, False)
+    # tableName = 'firms_modis_russia_asia_2021298_polygon'
+    # connectDatabase(tableName, False)
+    # data = Common.readlineTxt(
+    #     "/run/user/1000/gvfs/afp-volume:host=RS.local,user=admin,volume=RS_GIS/RS_DATA/MODIS/FIRMS/modis-c6.1/Russia_Asia/MODIS_C6_1_Russia_Asia_MCD14DL_NRT_2021298.txt")
+    # insertInto(data, tableName, False)
+
+    # insert_db_connect_table('firms_modis_russia_asia_2021306')
